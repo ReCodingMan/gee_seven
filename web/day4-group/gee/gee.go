@@ -9,9 +9,20 @@ import (
 type HandlerFunc func(*Context)
 
 // Engine implement the interface of ServeHTTP
-type Engine struct {
-	router *router
-}
+type (
+	RouterGroup struct {
+		prefix      string
+		middlewares []HandlerFunc // support middleware
+		parent      *RouterGroup  // support nesting
+		engine      *Engine       // all groups share a Engine instance
+	}
+
+	Engine struct {
+		*RouterGroup
+		router *router
+		groups []*RouterGroup // store all groups
+	}
+)
 
 // New is the constructor of gee.Engine
 func New() *Engine {
@@ -42,3 +53,4 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := newContext(w, req)
 	engine.router.handle(c)
 }
+
