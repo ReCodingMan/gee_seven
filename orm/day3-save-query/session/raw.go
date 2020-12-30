@@ -2,6 +2,7 @@ package session
 
 import (
 	"database/sql"
+	"geeorm/clause"
 	"geeorm/dialect"
 	"geeorm/schema"
 	"github.com/prometheus/common/log"
@@ -13,9 +14,16 @@ type Session struct {
 	//sql     strings.Builder
 	//sqlVars []interface{}
 
+	//db       *sql.DB
+	//dialect  dialect.Dialect
+	//refTable *schema.Schema
+	//sql      strings.Builder
+	//sqlVars  []interface{}
+
 	db       *sql.DB
 	dialect  dialect.Dialect
 	refTable *schema.Schema
+	clause   clause.Clause
 	sql      strings.Builder
 	sqlVars  []interface{}
 }
@@ -30,8 +38,12 @@ func New(db *sql.DB, dialect dialect.Dialect) *Session {
 }
 
 func (s *Session) Clear() {
+	//s.sql.Reset()
+	//s.sqlVars = nil
+
 	s.sql.Reset()
 	s.sqlVars = nil
+	s.clause = clause.Clause{}
 }
 
 func (s *Session) DB() *sql.DB {
